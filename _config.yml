@@ -7,15 +7,15 @@ relative_permalinks: true
 # Setup
 title:               Gopi Subramanian
 tagline:             'Mainly the Science in Data Science, occasionally the Art...'
-description:         'A reserved <a href="http://jekyllrb.com" target="_blank">Jekyll</a> theme that places the utmost gravity on content with a hidden drawer. Made by <a href="https://twitter.com/mdo" target="_blank">@mdo</a>.'
-url:                 http://lanyon.getpoole.com
+description:         'A blog listing some interesting data, algorithms and small data science projects.'
+url:                 http://subramgo.github.io/
 baseurl:             ''
 paginate:            5
 
 # About/contact
 author:
   name:              Gopi Subramanian
-  url:               http://http://subramgo.github.io/
+  url:               http://subramgo.github.io/
   email:             gopi.subramanian@gmail.com
 
 # Custom vars
