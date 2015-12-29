@@ -1,3 +1,9 @@
+---
+layout: post
+title: Analtyics Node Setup
+comments: true
+---
+
 Analtyics Node 
 -------------
 
