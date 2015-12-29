@@ -3,10 +3,6 @@ layout: page
 title: Publications
 ---
 
-Publications
-============
-
-
 1. Unsupervised Extraction of Part Names from Service Logs.
 Aravind Chandramouli, Gopi Subramanian, and Debasis Bal.
 Proceedings of The World Congress on Engineering and Computer Science 2013 , pp826-828 [1]
@@ -44,7 +40,3 @@ US 8261277 B2
 US 20130138456 A1
 
 
-Links
-=======
-
-1. http://www.iaeng.org/publication/WCECS2013/WCECS2013_pp826-828.pdf
