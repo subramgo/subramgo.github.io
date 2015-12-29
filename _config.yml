@@ -9,7 +9,7 @@ title:               Gopi Subramanian
 tagline:             'Mainly the Science in Data Science, occasionally the Art...'
 description:         'A blog listing some interesting data, algorithms and small data science projects.'
 url:                 http://subramgo.github.io/
-baseurl:             ''
+baseurl:             'http://subramgo.github.io/'
 paginate:            5
 
 # About/contact
