@@ -7,7 +7,7 @@ relative_permalinks: true
 # Setup
 title:               Gopi Subramanian
 tagline:             'Mainly the Science in Data Science, occasionally the Art...'
-description:         'A blog listing some interesting data, algorithms and small data science projects.'
+description:         'Random musing on some machine learning algorithms.'
 url:                 http://subramgo.github.io
 baseurl:             ""
 paginate:            5
