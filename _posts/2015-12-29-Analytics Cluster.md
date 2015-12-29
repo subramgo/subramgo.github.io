@@ -100,3 +100,4 @@ Start the H2o cluster in all the nodes
     java -Xmx4g -jar h2o.jar -flatfile nodes.txt -port 54321
 
 
+{% include comments.html %}
