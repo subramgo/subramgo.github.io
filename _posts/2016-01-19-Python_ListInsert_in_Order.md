@@ -46,7 +46,7 @@ As you can see the function **bisect_left** returned the position where we need 
 What is the significance of **_left** ? If 45 is already present in the list, it will be inserted to the left of existing 45 entry. We also have another function called **bisect_right**. This will insert the new element to the right of the existing element.
 
 
-We alos have a convienient function which combines both **bisect_left** and list.insert, **insort_left**.
+We also have a convenient function which combines both **bisect_left** and list.insert, **insort_left**.
 
 ```
 >>> bisect.insort_left(a_list,12)
