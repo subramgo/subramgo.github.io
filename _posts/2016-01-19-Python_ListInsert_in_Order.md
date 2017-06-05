@@ -13,6 +13,7 @@ Let us say we have the following python snippet, where we create a list and sort
 [1, 2, 10, 34, 56]
 
 ```
+<!--break-->
 
 Let us now add another element 45 to list, to the death of our sorting.
 
