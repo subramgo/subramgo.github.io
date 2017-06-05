@@ -59,4 +59,5 @@ We also have a convenient function which combines both **bisect_left** and list.
 
 [module bisect](https://docs.python.org/2.7/library/bisect.html#module-bisect)
 
+{% include comments.html %}
 
