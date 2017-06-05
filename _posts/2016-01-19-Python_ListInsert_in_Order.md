@@ -41,3 +41,22 @@ How do we maintain the sort order in our list as we add new elements to it ? Mod
 
 
 ```
+As you can see the function **bisect_left** returned the position where we need to insert our new element. Our new elements goes to position 4 in the list and we finally use the list insert function to insert 45 into 4th position.
+
+What is the significance of **_left** ? If 45 is already present in the list, it will be inserted to the left of existing 45 entry. We also have another function called **bisect_right**. This will insert the new element to the right of the existing element.
+
+
+We alos have a convienient function which combines both **bisect_left** and list.insert, **insort_left**.
+
+```
+>>> bisect.insort_left(a_list,12)
+>>> a_list
+[1, 2, 10, 12, 34, 45, 56]
+>>> 
+
+```
+
+
+[module bisect](https://docs.python.org/2.7/library/bisect.html#module-bisect)
+
+
