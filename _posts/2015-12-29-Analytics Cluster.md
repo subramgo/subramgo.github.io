@@ -21,6 +21,7 @@ R Studio can be accessed through browser
     http://<ip address>:8787/
 
 
+<!--break-->
 In order to access H2O cluster, ssh tunnelling has be enabled from the client. Install H2O section has the details of tunnelling. Curently there are two 
 
 
