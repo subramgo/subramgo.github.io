@@ -6,6 +6,9 @@ comments: true
 
 When we start working on a machine learning problem, say a classifier in this case, it's always handy to create quickly a base line classifier against which we can compare our new models. You don't want to spend a lot of time creating these base line classifier, you would rather spend that time in building and validating new features for your final model. In this post we will see how we can create a quick and dirty base line classifier using scikit learn package.
 
+[code@github](https://github.com/subramgo/MachineLearningMisc/blob/master/BaseEstimator.py)
+
+
 <!--break-->
 
 ## Input data set
