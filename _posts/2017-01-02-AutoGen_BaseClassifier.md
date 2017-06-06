@@ -4,7 +4,7 @@ title: How to automatically create Base Line Estimators using scikit learn.
 comments: true
 ---
 
-When we start working on a machine learning problem, say a classifier in this case, it's always handy to create quickly a base line classifier against which we can compare our new models. You don't want to spend a lot of time creating these base line classifier, you would rather spend that time in building and validating new features for your final model. In this post we will see how we can create a quick and dirty base line classifier using scikit learn package.
+For any machine learning problem, say a classifier in this case, it's always handy to create quickly a base line classifier against which we can compare our new models. You don't want to spend a lot of time creating these base line classifiers; you would rather spend that time in building and validating new features for your final model. In this post we will see how we can rapidly create base line classifier using scikit learn package for any dataset.
 
 [code@github](https://github.com/subramgo/MachineLearningMisc/blob/master/BaseEstimator.py)
 
@@ -28,9 +28,10 @@ y = iris.target
 
 ```
 
-## Dummy Classifier
+## DummyClassifier
 
-Module **sklearn.dummy** has the [DummyClassifier][2] class. Once we import it, usage is very similar to any other algorithm in scikit learn, we can use the *fit* and *predict* functions.
+Scikit provides the class *DummyClassifier* to help us create our base line model rapidly.
+Module **sklearn.dummy** has the [DummyClassifier][2] class. Its api interfaces are very similar to any other model in scikit learn, use the *fit* function to build the model and *predict* function to perform classification.
 
 ```
 from sklearn.dummy import DummyClassifier
@@ -41,7 +42,7 @@ dummy.fit(x, y)
 ```
 ### Strategy - stratified
 
-Let us look at the parameters while initializing *DummyClassifier*. The first parameter *strategy* is used to define the modus operandi of our Dummy Classifier. In the example above we have selected *stratified* as the strategy. According to this strategy, the classifier looks at the class distribution. 
+Let us look at the parameters while initializing *DummyClassifier*. The first parameter *strategy* is used to define the modus operandi of our Dummy Classifier. In the example above we have selected *stratified* as the strategy. According to this strategy, the classifier looks at the class distribution in our target variable to make its predictions.
 
 In Iris data set case, there are 150 total records and three classes. The classes are uniformly distributed, there are 50 records per each class. 33.33% is the class distribution. 
 
@@ -76,7 +77,7 @@ print predictions[1]
 
 ```
 
-Oh la.. our predictions are ready. Our *output* variable is a matrix of size (150,3), one dimension for each class. In the next line we use the argmax function to get the index which is set to 1. This is our predicted class variable. Let us call the *predict* function and print some accuracy metrics for our dummy classifier.
+Oh la.. our predictions are ready. Our *output* variable is a matrix of size (150,3), one dimension for each class. In the next line we use the argmax function to get the index which is set to 1. This is our predicted class. Now that we know what is happening under the hood, let us call the *predict* function and print some accuracy metrics for our dummy classifier.
 
 ```
 y_predicted = dummy.predict(x)
@@ -94,7 +95,7 @@ print confusion_matrix(y, y_predicted, labels=list(set(y)))
 
 ### Strategy - most_frequent
 
-In the case of *most_frequent*, the dummy classifier will always predict the label which occurs more frquently in the training set. 
+In the case of *most_frequent*, the dummy classifier will always predict the label which occurs most frequently in the training set. 
 
 ### Strategy - constant
 
@@ -186,7 +187,13 @@ print "     Dummy Model 4, strategy: uniform, accuracy {0:.2f}, precision {0:.2f
 
 ```
 
-That is all for this post. Will continue with a another post explaing *DummyRegressor*.
+That is all for this post. Will continue with another post explaining *DummyRegressor*.
+
+
+## Links
+
+[1] https://docs.scipy.org/doc/numpy/reference/generated/numpy.random.multinomial.html
+[2] http://scikit-learn.org/stable/modules/generated/sklearn.dummy.DummyClassifier.html#sklearn.dummy.DummyClassifier
 
 
 [1]: https://docs.scipy.org/doc/numpy/reference/generated/numpy.random.multinomial.html
