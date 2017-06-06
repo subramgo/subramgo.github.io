@@ -190,11 +190,6 @@ print "     Dummy Model 4, strategy: uniform, accuracy {0:.2f}, precision {0:.2f
 That is all for this post. Will continue with another post explaining *DummyRegressor*.
 
 
-## Links
-
-[1] https://docs.scipy.org/doc/numpy/reference/generated/numpy.random.multinomial.html
-[2] http://scikit-learn.org/stable/modules/generated/sklearn.dummy.DummyClassifier.html#sklearn.dummy.DummyClassifier
-
 
 [1]: https://docs.scipy.org/doc/numpy/reference/generated/numpy.random.multinomial.html
 [2]: http://scikit-learn.org/stable/modules/generated/sklearn.dummy.DummyClassifier.html#sklearn.dummy.DummyClassifier
