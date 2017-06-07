@@ -48,7 +48,8 @@ We have one independent variable *x* and a dependent variable *y*. Our noise, *e
 
 As seen in the plot, as we move from left to right along the x axis, we don't see a lot of variation in the values of y. An ordinary least square regression is the ideal candidate here to model the data.
 
-```
+{% highlight python %}
+
 ## Let us do a least square regression on the above dataset
 from sklearn.linear_model import LinearRegression
 
@@ -74,7 +75,7 @@ plt.ylabel("y and predicted y")
 plt.title("Linear regression")
 
 
-```
+{% endhighlight %}
 
 With a variance score of 1.0, we have modeled the data perfectly. Our plot of the regression line confirms the same.
 
@@ -82,7 +83,7 @@ With a variance score of 1.0, we have modeled the data perfectly. Our plot of th
 
 Now let us introduce some variable noise in our data. Our noise varies based on the range of our x values.
 
-```
+{% highlight python %}
 ## Generate some data with non-constant variance
 x_ = np.arange(100).reshape(100,1)
 intercept_ = 6
@@ -100,7 +101,8 @@ plt.xlabel("x")
 plt.ylabel("y")
 plt.title("Data with non-constant variance")
 
-```
+{% endhighlight %}
+
 *scale* parameter for our *error_* calculation is no longer 1 as in the previous case. The *scale* is a linear function of our x value. 
 
 
@@ -110,7 +112,8 @@ plt.title("Data with non-constant variance")
 This phenomenon where the variability of y is unequal across the range of values of x is called as **Heteroscedasticity**.
 As seen in the plot it takes the shape of a cone. The y variable widens as the value of x increases. Let us try to fit a linear regression to this dataset.
 
-```
+{% highlight python %}
+
 ## Try to fit a linear regression
 model2 = LinearRegression(fit_intercept = True, normalize = False)
 model2.fit(x_, y_)
@@ -134,7 +137,8 @@ plt.xlabel("x")
 plt.ylabel("y and predicted y")
 plt.title("Linear regression on data with non-constant variance")
 
-```
+{% endhighlight %}
+
 
 
 With variance score of 0.43 linear regression did not do a good job overall. When the x values are close to 0, linear regression is giving a good estimate of y, but we near end of x values the predicted y is far way from the actual values and hence becomes completely meaningless.
@@ -145,7 +149,8 @@ Here is where Quantile Regression comes to rescue. I have used the python packag
 
 Let us begin with finding the regression coefficients for the conditioned median, 0.5 quantile.
 
-```
+{% highlight python %}
+
 ## Quantile regression for the median, 0.5th quantile
 import pandas as pd 
 data = pd.DataFrame(data = np.hstack([x_, y_]), columns = ["x", "y"])
@@ -158,8 +163,10 @@ mod = smf.quantreg('y ~ x', data)
 res = mod.fit(q=.5)
 print(res.summary())
 
+{% endhighlight %}
 
-```
+
+
 
 First we take the data into a pandas dataframe so that its easier for us to work with statsmodel interfaces. Our dataframe *data* has two columns, 'x' and 'y'.
 
@@ -187,7 +194,7 @@ x              0.0934      0.011      8.791      0.000       0.072       0.115
 
 You see that our intercept is 6.0398 and our slope or the coefficient for our x is 0.0934. These are the parameters for the 0.5th quantile of our y. Similarly we can do the models for other quantiles.
 
-```
+{% highlight python %}
 
 ## Build the model for other quantiles
 quantiles = np.arange(0.1,1,0.1)
@@ -206,7 +213,8 @@ params = pd.DataFrame(data = params, columns = ['qt','intercept','x_coef','cf_lo
 
 print params
 
-```
+{% endhighlight %}
+
 
 In side the for loop we build models for each quantile in our list quantiles. As we build these models we us also store the model parameters in a list called params. Late we make a dataframe of the same name, so we we can view our different models.
 
@@ -230,7 +238,8 @@ As you see in the above output, our intercept value for the 0.1th quantile is 5.
 
 Let us plot 0.1th, 0.5th and 0.9th quantile models against our original data.
 
-```
+{% highlight python %}
+
 plt.figure(5)
 plt.scatter(x_, y_,  color='black')
 plt.plot(x_, y_pred2, color='blue',
@@ -258,7 +267,8 @@ plt.title("Quantile regression on data with non-constant variance")
 plt.legend()
 
 
-```
+{% endhighlight %}
+
 
 ![]({{ site.url }}/public/quantileregression/figure_5.png)
 
@@ -266,14 +276,16 @@ The Ordinary Linear regression model is plotted in blue colored line. You can co
 
 Another interesting way to visualize is the slope values and their upper/lower bounds for different quantiles.
 
-```
+{% highlight python %}
+
 ## Plot the changes in the quantile coefficients
 plt.figure(6)
 params.plot(x = 'qt', y = ['x_coef','cf_lower_bound', 'cf_upper_bound'], 
 	title = 'Slope for different quantiles', kind ='line', style = ['b-','r--','g--'])
 
 
-```
+{% endhighlight %}
+
 
 ![]({{ site.url }}/public/quantileregression/figure_7.png)
 
