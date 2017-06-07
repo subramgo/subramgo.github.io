@@ -20,7 +20,7 @@ For complete source code
 
 Let us write some code to better understand this. Let us create some data and plot it.
 
-```
+{% highlight python %}
 import numpy as np 
 import matplotlib.pyplot as plt 
 
@@ -40,7 +40,7 @@ plt.ylabel("y")
 plt.title("Data with constant variance")
 
 
-```
+{% endhighlight %}
 
 We have one independent variable *x* and a dependent variable *y*. Our noise, *error_* is gaussian with unit variance.
 
