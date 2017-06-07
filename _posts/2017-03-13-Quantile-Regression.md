@@ -44,7 +44,7 @@ plt.title("Data with constant variance")
 
 We have one independent variable *x* and a dependent variable *y*. Our noise, *error_* is gaussian with unit variance.
 
-![](../public/quantileregression/figure_1.png)
+![]({{ site.url }}/public/quantileregression/figure_1.png)
 
 As seen in the plot, as we move from left to right along the x axis, we don't see a lot of variation in the values of y. An ordinary least square regression is the ideal candidate here to model the data.
 
@@ -78,7 +78,7 @@ plt.title("Linear regression")
 
 With a variance score of 1.0, we have modeled the data perfectly. Our plot of the regression line confirms the same.
 
-![](../public/quantileregression/figure_2.png)
+![]({{ site.url }}/public/quantileregression/figure_2.png)
 
 Now let us introduce some variable noise in our data. Our noise varies based on the range of our x values.
 
@@ -104,7 +104,7 @@ plt.title("Data with non-constant variance")
 *scale* parameter for our *error_* calculation is no longer 1 as in the previous case. The *scale* is a linear function of our x value. 
 
 
-![](../public/quantileregression/figure_3.png)
+![]({{ site.url }}/public/quantileregression/figure_3.png)
 
 
 This phenomenon where the variability of y is unequal across the range of values of x is called as **Heteroscedasticity**.
@@ -139,7 +139,7 @@ plt.title("Linear regression on data with non-constant variance")
 
 With variance score of 0.43 linear regression did not do a good job overall. When the x values are close to 0, linear regression is giving a good estimate of y, but we near end of x values the predicted y is far way from the actual values and hence becomes completely meaningless.
 
-![](../public/quantileregression/figure_4.png)
+![]({{ site.url }}/public/quantileregression/figure_4.png)
 
 Here is where Quantile Regression comes to rescue. I have used the python package *statsmodels 0.8.0* for Quantile Regression.
 
@@ -260,7 +260,7 @@ plt.legend()
 
 ```
 
-![](../public/quantileregression/figure_5.png)
+![]({{ site.url }}/public/quantileregression/figure_5.png)
 
 The Ordinary Linear regression model is plotted in blue colored line. You can compare that model with other quantile models. 
 
@@ -275,7 +275,7 @@ params.plot(x = 'qt', y = ['x_coef','cf_lower_bound', 'cf_upper_bound'],
 
 ```
 
-![](../public/quantileregression/figure_7.png)
+![]({{ site.url }}/public/quantileregression/figure_7.png)
 
 You can see how the slope value is varying for different quantiles. Compared with ordinary least square regression which is flat across all the quantiles, Quantile Regression allows us to investigate into the different areas of the data and model them appropriately.
 
