@@ -27,12 +27,19 @@ Patents
 
 
 Predicting Work Orders For Scheduling Service Tasks On Intrusion And Fire Monitoring
+
 Publication number: 20170011312
+
 Abstract: A work order prediction system is described. The system includes computers that implement a recommendation engine that receives historical job records from customer jobs and produces a listing of rules comprising rules of the form A?B or A,B?C or A,B>C, D, where A, B, C, D are work order jobs and a calculated confidence value for a result of each of the rules. The system includes a key phrase extraction module and a site similarity computation module, which feed a prediction engine that generates a prediction of a work order and basis of the prediction.
+
 Type: Application
+
 Filed: July 7, 2015
+
 Publication date: January 12, 2017
+
 Applicant: Tyco Fire & Security GmbH
+
 Inventors: Gopi Subramanian, Christine Trainor, Michael Stewart
 
 Systems and methods for process alarm reduction
