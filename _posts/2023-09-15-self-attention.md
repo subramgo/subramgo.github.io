@@ -11,9 +11,9 @@ In this article, we will go through a bunch of numpy code to understand the work
 of self-attention. There are a lot of tutorials out there where the attention
 mechanism is explained with illustrations. I personally liked two of them
 
-* [Understanding and coding Self attention mechanism of large langugage models from Scratch](https://sebastianraschka.com/blog/2023/self-attention-from-scratch.html)
+- [Understanding and coding Self attention mechanism of large langugage models from Scratch](https://sebastianraschka.com/blog/2023/self-attention-from-scratch.html)
 
-* [The illustrated transformer](http://jalammar.github.io/illustrated-transformer/)
+- [The illustrated transformer](http://jalammar.github.io/illustrated-transformer/)
 
 
 As we work through the numpy code, I have shared some thoughts and expanded on
