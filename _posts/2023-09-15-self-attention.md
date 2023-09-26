@@ -64,6 +64,7 @@ wv = np.random.normal(size=(v_d, EMBD_LEN))
 wqp = np.matmul(wq,x.T).T
 wkp = np.matmul(wk,x.T).T
 wvp = np.matmul(wv,x.T).T
+
 {% endhighlight %}
 
 
@@ -71,7 +72,7 @@ Three weight matrices, wq,wk and wv are created. These matrices are used to proj
 our input matrix x to create three new matrices, wqp, wkp and wvp. The input shapes
 of all the participating matrices are given below,
 
-```
+{% highlight python }
 x, input shape (5, 10)
 wq, q weight matrix shape (20, 10)
 wk, k weight matrix shape (20, 10)
@@ -81,7 +82,7 @@ wqp, q weight matrix shape (5, 20)
 wkp, k weight matrix shape (5, 20)
 wvp, v weight matrix shape (5, 25)
 
-```
+{% endhighlight %}
 
 The initial input matrix x, with dimension 5 x 10 is now projected into three
 new matrices. In wqp and wkp the embedded space of dimension 10 is projected into a
