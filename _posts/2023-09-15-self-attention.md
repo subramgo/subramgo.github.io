@@ -50,7 +50,7 @@ x = np.random.normal(size=(SEQ_LEN,EMBD_LEN))
 The input is a matrix of size (5 x 10), where each row represents the embedding of a word token,
 a total of 5 word tokens.
 
-{% highlight python }
+{% highlight python %}
 # dimensions of q,k and v
 q_d = k_d = 20 # dimension of query and key weights
 v_d = 25       # dimension of value matrix weight
@@ -71,3 +71,22 @@ wvp = np.matmul(wv,x.T).T
 Three weight matrices, wq,wk and wv are created. These matrices are used to project
 our input matrix x to create three new matrices, wqp, wkp and wvp. The input shapes
 of all the participating matrices are given below,
+
+{% highlight python %}
+x, input shape (5, 10)
+wq, q weight matrix shape (20, 10)
+wk, k weight matrix shape (20, 10)
+wv, v weight matrix shape (25, 10)
+
+wqp, q weight matrix shape (5, 20)
+wkp, k weight matrix shape (5, 20)
+wvp, v weight matrix shape (5, 25)
+{% endhighlight %}
+
+The initial input matrix x, with dimension 5 x 10 is now projected into three
+new matrices. In wqp and wkp the embedded space of dimension 10 is projected into a
+feature space of dimension 20. In wvp its projected into a space of dimension 25.
+
+The matrices wq,wk and wv serve as a parameter to the final neural network and will
+be adjusted based on gradients during backprobagation. This will allow the network
+to learn the new feature space.
