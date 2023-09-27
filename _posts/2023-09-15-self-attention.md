@@ -4,7 +4,7 @@ title: "Paying attention to Self-Attention heads"
 categories: GenAI
 ---
 
-Yet another attention
+Yet another attention post
 ---------------------
 
 In this article, we will go through a bunch of numpy code to understand the working

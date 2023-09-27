@@ -8,7 +8,8 @@ author:
 description: >
   This is my technical blog. My journey of understanding from theory to applicability of
   Deep Learning technologies. You will find articles on a variety of concepts from standard python,
-  computer vision, natural languate processing, machine learning problem formulation, interesting
+  computer vision, natural language processing, optimizations, discrete mathematics,
+  probabilistic data structures, machine learning problem formulation, interesting
   papers and applications of Artificial intelligence.
 
 # Build settings
