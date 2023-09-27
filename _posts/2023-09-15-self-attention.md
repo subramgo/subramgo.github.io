@@ -88,5 +88,17 @@ new matrices. In wqp and wkp the embedded space of dimension 10 is projected int
 feature space of dimension 20. In wvp its projected into a space of dimension 25.
 
 The matrices wq,wk and wv serve as a parameter to the final neural network and will
-be adjusted based on gradients during backprobagation. This will allow the network
+be adjusted based on gradients during back probagation. This will allow the network
 to learn the new feature space.
+
+I always had this question about the importance of word embeddings for downstream
+natural language processing tasks. Had recently put a survey in linked in.
+[Clicke here for the survey](https://www.linkedin.com/posts/gopi-subramanian-39bba651_building-custom-llms-activity-7096593842291818496-sdNe?utm_source=share&utm_medium=member_desktop)
+Say we are building a classifier on a corpus of
+engineering notes written by a technician servicing an aircraft. The lingo and word tokens
+are going to reflect the domain. Previously trained embeddings may not have a corresponding
+word vectors. In those scenarios do we resort to make an embedding space for that vocabulary before
+we build our classifier? I don't have a clear answer. However, by projecting some of these
+embeddings into another subspace, we can hope that transformers or other dense network ingesting these
+project matrices will learn them during the training process.In worst case, the bytepair encoding or sentencepair encoding may split some of these words in a way we don't want. The downstream learning may become
+completely useless.
