@@ -74,10 +74,10 @@ previous frames.
 
 We will focus on the scaled self-attention proposed in the paper [Attention is all you need](https://arxiv.org/pdf/1706.03762.pdf).
 
+Its easy to comprehend (for me!) the context information when the inputs are a list of words
+provided for any downstream natural language processing task. List of words are
+the basic input units to any natural language processing task.
 
-
-
-List of words are the basic input units to any natural language processing task.
 A standard text preprocessing looks like the below figure.
 
 ![Text Preprocessing Pipeline](/assets/textpipeline.png)
@@ -96,8 +96,36 @@ x = np.random.normal(size=(SEQ_LEN,EMBD_LEN))
 
 {% endhighlight %}
 
+
 The input is a matrix of size (5 x 10), where each row represents the embedding of a word token,
 a total of 5 word tokens.
+
+### Why embeddings
+
+In 2003 [Yoshua Bengio](https://scholar.google.com/citations?user=kukA0LcAAAAJ&hl=en) and his team introduced embeddings in the paper, A neural probabilistic language model. Journal of Machine Learning Research, 3:1137-1155, 2003. Since then there are several follow up research and development
+occured in the embedding space.
+
+For our purpose to continue with the rest of the article, word embeddings are
+a representation of words in a vector space. Thus we can leverage linear
+algebra techniques like  to find similarity between words.
+
+I personally like the 2013 google paper [Efficient estimation of word representations in vector space](https://arxiv.org/pdf/1301.3781.pdf). This paper introduces CBOW and Skip-ngram architecture
+to learn word representations from large corpus.
+
+### pair-wise scoring
+
+{% highlight python %}
+pairwise_scoring = np.matmul(x,x.T)
+{% endhighlight %}
+
+Each word is a vector.We use the dot product similarity to find the
+pair-wise scoring between the words.
+
+![Pairwise Scoring](/assets/scoring.png)
+
+The resultant pairwise_scoring is a
+5 x 5 matrix which encodes the similarity between these words.
+
 
 {% highlight python %}
 # dimensions of q,k and v
