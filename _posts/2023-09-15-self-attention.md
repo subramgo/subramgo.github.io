@@ -4,26 +4,32 @@ title: "Paying attention to Self-Attention heads"
 categories: GenAI
 ---
 
-Yet another attention post
+Why another self-attention post
 ---------------------
 
-In this article, we will go through a bunch of numpy code to understand the working
-of self-attention. There are a lot of tutorials out there where the attention
-mechanism is explained with illustrations. I personally liked two of them
+There are a lot of tutorials out there explaining
+attention mechanism with illustrations.
 
-- [Understanding and coding Self attention mechanism of large langugage models from Scratch](https://sebastianraschka.com/blog/2023/self-attention-from-scratch.html)
+Two of my favorites are
+
+- [Understanding and coding Self attention mechanism of large language models from Scratch](https://sebastianraschka.com/blog/2023/self-attention-from-scratch.html)
 
 - [The illustrated transformer](http://jalammar.github.io/illustrated-transformer/)
 
 
-As we work through the numpy code, I have shared some thoughts and expanded on
-some details. I will pass on the burden of deciding about the triviality of these
-observations to the readers. A list of those observational topics are.
+While reading the paper [Attention is all you need](https://arxiv.org/pdf/1706.03762.pdf) and the articles
+mentioned above, I was curious about these topics:
 
-1. Projecting the embedded space into a feature subspace and subsequent learning of
-these spaces during training.
+1. Projecting the embedded space into a feature subspace and subsequent
+learning of these spaces during training.
 
-2. Scaled self-attention
+2. Scaled self-attention, why scale the value.
+
+3. Finally the Big O of computing pairwise score. Space and time complexity. 
+
+I will pass on the burden of deciding about the triviality of these
+observations to the readers.
+
 
 Projection matrices
 -----------------------
@@ -102,3 +108,44 @@ we build our classifier? I don't have a clear answer. However, by projecting som
 embeddings into another subspace, we can hope that transformers or other dense network ingesting these
 project matrices will learn them during the training process.In worst case, the bytepair encoding or sentencepair encoding may split some of these words in a way we don't want. The downstream learning may become
 completely useless.
+
+## Calculate the self-attention
+
+Finally we calculate the self-attention. In a nutshell we find the similarity between
+the items in our matrices. We have projected 5 words from embedded space to a new feature space, we find the similarity between these five word tokens.
+
+{% beginhighlight python %}
+
+score = np.matmul(wqp, wkp.T)
+scaled_score = score / np.sqrt(wkd)
+
+
+{% endhighlight%}
+
+The resultant matrix, score is a 5 x 5 matrix.
+
+The dot product can get very large, hence the scaling. From the paper [Attention is all you need](https://arxiv.org/pdf/1706.03762.pdf), the foot note explains the need for scaling.
+
+"To illustrate why the dot products get large, assume that the components of q and k are independent random
+variables with mean 0 and variance 1. Their dot product will have a mean of 0 and variance of dk"
+
+More importantly the we need to keep the dot product controlled because of the subsequent application of softmax.
+
+{% beginhighlight python %}
+def softmax(x):
+    e_x = np.exp(x)
+    return e_x / e_x.sum(axis=1,keepdims=True)
+
+scaled_softmax_score = softmax(scaled_score)
+
+{% endhighlight python %}
+
+Without scaling, applying softmax on very large value can lead to arithmetic computation problem. Exponent of large numbers can result in very large values.
+
+Finally the attention context vector is created as follows.
+
+{% beginhighlight python %}
+
+context_vector = np.sum(np.matmul(scaled_softmax_score, wvp),axis=0)
+
+{% endhighlight%}
