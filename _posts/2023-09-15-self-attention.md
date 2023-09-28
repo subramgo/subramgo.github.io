@@ -25,7 +25,7 @@ learning of these spaces during training.
 
 2. Scaled self-attention, why scale the value.
 
-3. Finally the Big O of computing pairwise score. Space and time complexity. 
+3. Finally the Big O of computing pairwise score. Space and time complexity.
 
 I will pass on the burden of deciding about the triviality of these
 observations to the readers.
@@ -131,7 +131,7 @@ variables with mean 0 and variance 1. Their dot product will have a mean of 0 an
 
 More importantly the we need to keep the dot product controlled because of the subsequent application of softmax.
 
-{% beginhighlight python %}
+{% highlight python %}
 def softmax(x):
     e_x = np.exp(x)
     return e_x / e_x.sum(axis=1,keepdims=True)
@@ -144,7 +144,7 @@ Without scaling, applying softmax on very large value can lead to arithmetic com
 
 Finally the attention context vector is created as follows.
 
-{% beginhighlight python %}
+{% highlight python %}
 
 context_vector = np.sum(np.matmul(scaled_softmax_score, wvp),axis=0)
 
