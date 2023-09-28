@@ -17,7 +17,7 @@ Two of my favorites are
 - [The illustrated transformer](http://jalammar.github.io/illustrated-transformer/)
 
 
-While reading the paper [Attention is all you need](https://arxiv.org/pdf/1706.03762.pdf) and the articles
+After reading the paper [Attention is all you need](https://arxiv.org/pdf/1706.03762.pdf) and the articles
 mentioned above, I was curious about these topics:
 
 1. Projecting the embedded space into a feature subspace and subsequent
@@ -31,8 +31,51 @@ I will pass on the burden of deciding about the triviality of these
 observations to the readers.
 
 
-Projection matrices
------------------------
+
+Background
+--------
+
+It is easy to understand attention as a feature selection problem.
+Not all input features seen by a model are equally important for the task at hand.
+It will be beneficial if the model could pay more attention to important features than
+considering all the features presented to it.
+
+1. For each feature, compute the importance score. The higher the score, the more important
+the feature.
+2. Use these scores in your downstream task to guide the model.
+
+Some of the existing techniques follow the above steps:
+
+- Lasso regression, l1 regularization ensures that some of the model coefficients
+are pushed towards zero.
+
+- Maxpooling layers in CNN selects' the cell with maximum values and ignore the rest
+of cells.
+
+From the above example, a reader may conclude the need for these importance scores is
+to either keep or discard a feature. However, these scores can enrich
+the information the feature carries.
+
+In sequential features, in addition to individual elements, the relationship
+among the elements carries a lot of information. This relationship is commonly
+called the context.
+
+- In the sentence "premature optimization is the root cause
+of all evil," the famous Donald Knuth quote, the word evil is better understood
+from the context of "premature optimization."
+
+- In a time series sales data, the sales of this quarter is related to the previous quarter,
+the last year same quarter and similar other time based relationships.
+
+- In image data, the neighboring pixels are related.
+
+- In video data, pixel from the current frames can be enriched with the information from
+previous frames.
+
+We will focus on the scaled self-attention proposed in the paper [Attention is all you need](https://arxiv.org/pdf/1706.03762.pdf).
+
+
+
 
 List of words are the basic input units to any natural language processing task.
 A standard text preprocessing looks like the below figure.
