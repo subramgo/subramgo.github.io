@@ -114,7 +114,7 @@ completely useless.
 Finally we calculate the self-attention. In a nutshell we find the similarity between
 the items in our matrices. We have projected 5 words from embedded space to a new feature space, we find the similarity between these five word tokens.
 
-{% beginhighlight python %}
+{% highlight python %}
 
 score = np.matmul(wqp, wkp.T)
 scaled_score = score / np.sqrt(wkd)
