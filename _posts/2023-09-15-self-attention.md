@@ -126,7 +126,7 @@ softmax normalization. Will take it up in the following sections.**
 
 {% highlight python %}
 pairwise_scoring = np.matmul(x,x.T)
-{% endhighilight %}
+{% endhighlight %}
 
 Each word is a vector.We use the dot product similarity to find the
 pair-wise scoring between the words. An illustration of pair wise calculation.
@@ -143,7 +143,7 @@ We enrich the input matrix x with this pairwise scoring
 
 {% highlight python %}
 enriched_x = np.matmul(pairwise_scoring,x)
-{% endhighlight%}
+{% endhighlight %}
 
 ![Enrich input](/assets/enrich.png)
 
