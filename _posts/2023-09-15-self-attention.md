@@ -73,6 +73,8 @@ the last year same quarter and similar other time based relationships.
 previous frames.
 
 
+Self Attention bare bones
+-----------------------
 
 We will focus on the scaled self-attention proposed in the paper [Attention is all you need](https://arxiv.org/pdf/1706.03762.pdf).
 
@@ -118,6 +120,10 @@ to learn word representations from large corpus.
 
 ### pair-wise scoring
 
+**For the initiated, to keep things simple, I have ignored scaling and
+softmax normalization. Will take it up in the following sections.**
+
+
 {% highlight python %}
 pairwise_scoring = np.matmul(x,x.T)
 {% endhighilight %}
@@ -131,7 +137,7 @@ pair-wise scoring between the words. An illustration of pair wise calculation.
 The resultant pairwise_scoring is a
 5 x 5 matrix which encodes the similarity between these words.
 
-## Enrich the input with pairwise scoring
+### Enrich the input with pairwise scoring
 
 We enrich the input matrix x with this pairwise scoring
 
@@ -143,22 +149,43 @@ enriched_x = np.matmul(pairwise_scoring,x)
 
 
 This is the underlying idea behind self-attention.
-Since the words are already represented in the vector space, dot product of the vector provides the similarity scores between words. If two words have occurred together in the corpus used to train the embedding model, the dot product will say they are similar.
+Since the words are already represented in the vector space, dot product of the
+vector provides the similarity scores between words. If two words have occurred
+together in the corpus used to train the embedding model, the dot product will
+say they are similar. This score is further used to enrich the input.
 
-This score is further used to enrich the input.
+
+Self attention expanded
+------------
+<table>
+  <tr>
+<td> <img src="/assets/attention.png"  alt="1" width = 150 height = 150 ></td>
+
+<td><img src="/assets/barebone.jpg" alt="2" width = 150 height = 150>
+    </td>
+   </tr>
+</table>
+
+In the table above, the first column has  the picture from Attention is all you need paper. The second column depicts our barebone attention explained
+in the previous section.
+
+1. Our barebone had a single input X, our word embeddings matrix. The scaled dot attention has three inputs, Q,K,V.
+
+2. What are the additional boxes, scale, mask and softmax in scaled dot-product attention.
+
+Let us address the first question. All blogs and papers refer to input as Q,K and V. This comes from the search engine / recommendation terminology.
+
+In the case of self attention, Q, K and V are transformations of the input matrix. In the following code, wqp, wkp and wvp are equivalent to Q, K and V matrices depicted in the diagram.
 
 
 {% highlight python %}
-# dimensions of q,k and v
 q_d = k_d = 20 # dimension of query and key weights
 v_d = 25       # dimension of value matrix weight
 
-# weight matrices
 wq = np.random.normal(size=(q_d, EMBD_LEN))
 wk = np.random.normal(size=(k_d, EMBD_LEN))
 wv = np.random.normal(size=(v_d, EMBD_LEN))
 
-# projection operation
 wqp = np.matmul(wq,x.T).T
 wkp = np.matmul(wk,x.T).T
 wvp = np.matmul(wv,x.T).T
@@ -184,6 +211,10 @@ wvp, v weight matrix shape (5, 25)
 The initial input matrix x, with dimension 5 x 10 is now projected into three
 new matrices. In wqp and wkp the embedded space of dimension 10 is projected into a
 feature space of dimension 20. In wvp its projected into a space of dimension 25.
+
+### Why do the transformation
+
+Why not use the input matrix x directly as we did in the bare bone attention example ?
 
 The matrices wq,wk and wv serve as a parameter to the final neural network and will
 be adjusted based on gradients during back probagation. This will allow the network
@@ -212,7 +243,7 @@ score = np.matmul(wqp, wkp.T)
 scaled_score = score / np.sqrt(wkd)
 
 
-{% endhighlight%}
+{% endhighlight %}
 
 The resultant matrix, score is a 5 x 5 matrix.
 
@@ -230,7 +261,7 @@ def softmax(x):
 
 scaled_softmax_score = softmax(scaled_score)
 
-{% endhighlight python %}
+{% endhighlight  %}
 
 Without scaling, applying softmax on very large value can lead to arithmetic computation problem. Exponent of large numbers can result in very large values.
 
@@ -240,4 +271,4 @@ Finally the attention context vector is created as follows.
 
 context_vector = np.sum(np.matmul(scaled_softmax_score, wvp),axis=0)
 
-{% endhighlight%}
+{% endhighlight %}
