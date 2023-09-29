@@ -72,7 +72,12 @@ the last year same quarter and similar other time based relationships.
 - In video data, pixel from the current frames can be enriched with the information from
 previous frames.
 
+
+
 We will focus on the scaled self-attention proposed in the paper [Attention is all you need](https://arxiv.org/pdf/1706.03762.pdf).
+
+In the context of self attention the context information captured using the importance score
+is used to enrich the input.
 
 Its easy to comprehend (for me!) the context information when the inputs are a list of words
 provided for any downstream natural language processing task. List of words are
@@ -91,7 +96,6 @@ import numpy as np
 SEQ_LEN   = 5
 EMBD_LEN  = 10
 
-# input matrix
 x = np.random.normal(size=(SEQ_LEN,EMBD_LEN))
 
 {% endhighlight %}
@@ -116,15 +120,32 @@ to learn word representations from large corpus.
 
 {% highlight python %}
 pairwise_scoring = np.matmul(x,x.T)
-{% endhighlight %}
+{% endhighilight %}
 
 Each word is a vector.We use the dot product similarity to find the
-pair-wise scoring between the words.
+pair-wise scoring between the words. An illustration of pair wise calculation.
 
 ![Pairwise Scoring](/assets/scoring.png)
 
+
 The resultant pairwise_scoring is a
 5 x 5 matrix which encodes the similarity between these words.
+
+## Enrich the input with pairwise scoring
+
+We enrich the input matrix x with this pairwise scoring
+
+{% highlight python %}
+enriched_x = np.matmul(pairwise_scoring,x)
+{% endhighlight%}
+
+![Enrich input](/assets/enrich.png)
+
+
+This is the underlying idea behind self-attention.
+Since the words are already represented in the vector space, dot product of the vector provides the similarity scores between words. If two words have occurred together in the corpus used to train the embedding model, the dot product will say they are similar.
+
+This score is further used to enrich the input.
 
 
 {% highlight python %}
