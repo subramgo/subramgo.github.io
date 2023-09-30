@@ -31,14 +31,11 @@ I will pass on the burden of deciding about the triviality of these
 observations to the readers.
 
 
-
 Background
 --------
 
-It is easy to understand attention as a feature selection problem.
-Not all input features seen by a model are equally important for the task at hand.
-It will be beneficial if the model could pay more attention to important features than
-considering all the features presented to it.
+It is easy to understand *attention* as a feature selection problem.
+Not all input features seen by a model are equally important for the task at hand. Prudency dictates we make the model pay more attention to important features than considering all the features presented to it.
 
 1. For each feature, compute the importance score. The higher the score, the more important
 the feature.
@@ -49,10 +46,9 @@ Some of the existing techniques follow the above steps:
 - Lasso regression, l1 regularization ensures that some of the model coefficients
 are pushed towards zero.
 
-- Maxpooling layers in CNN selects' the cell with maximum values and ignore the rest
-of cells.
+- Maxpooling layers in CNN selects' the cell with maximum values and ignore the rest of cell values.
 
-From the above example, a reader may conclude the need for these importance scores is
+From the above example, we may conclude the need for these importance scores is
 to either keep or discard a feature. However, these scores can enrich
 the information the feature carries.
 
@@ -69,30 +65,30 @@ the last year same quarter and similar other time based relationships.
 
 - In image data, the neighboring pixels are related.
 
-- In video data, pixel from the current frames can be enriched with the information from
-previous frames.
+- In video data, pixel from the current frames can be enriched with the information from previous frames.
 
+Self Attention is a way of enriching the features, by adding context
+information.
 
 Self Attention bare bones
 -----------------------
 
 We will focus on the scaled self-attention proposed in the paper [Attention is all you need](https://arxiv.org/pdf/1706.03762.pdf).
 
-In the context of self attention the context information captured using the importance score
-is used to enrich the input.
+In the context of self attention the context information captured using the importance score is used to enrich the input.
 
-Its easy to comprehend (for me!) the context information when the inputs are a list of words
-provided for any downstream natural language processing task. List of words are
-the basic input units to any natural language processing task.
+Its easy to comprehend (for me!) the context information when the inputs are a list of words provided for any downstream natural language processing task. List of words are the basic input units to any natural language processing task.
+
+In this sentence "John plays ukulele occasionally", we expect that for the token "John", the most related word token should be "plays". This what is called as context. So we need to enrich the representation for the token "John" with its relation to the token "plays".
 
 A standard text preprocessing looks like the below figure.
 
 ![Text Preprocessing Pipeline](/assets/textpipeline.png)
 
-Without going into the details of each of these blocks, let us pretend we took the output of
-embedding block and proceed.
+Without going into the details of each of these blocks, let us pretend we took the output of embedding block.
 
 {% highlight python %}
+
 import numpy as np
 
 SEQ_LEN   = 5
@@ -103,22 +99,20 @@ x = np.random.normal(size=(SEQ_LEN,EMBD_LEN))
 {% endhighlight %}
 
 
-The input is a matrix of size (5 x 10), where each row represents the embedding of a word token,
-a total of 5 word tokens.
+The input is a matrix of size (5 x 10), where each row represents the embedding of a word token, a total of 5 word tokens.
 
 ### Why embeddings
 
-In 2003 [Yoshua Bengio](https://scholar.google.com/citations?user=kukA0LcAAAAJ&hl=en) and his team introduced embeddings in the paper, A neural probabilistic language model. Journal of Machine Learning Research, 3:1137-1155, 2003. Since then there are several follow up research and development
-occured in the embedding space.
+In 2003 [Yoshua Bengio](https://scholar.google.com/citations?user=kukA0LcAAAAJ&hl=en) and his team introduced embeddings in the paper, A neural probabilistic language model. Journal of Machine Learning Research, 3:1137-1155, 2003. Since then there are several follow up research and development occurred in the embedding space.
 
 For our purpose to continue with the rest of the article, word embeddings are
 a representation of words in a vector space. Thus we can leverage linear
-algebra techniques like  to find similarity between words.
+algebra techniques to find similarity between words.
 
 I personally like the 2013 google paper [Efficient estimation of word representations in vector space](https://arxiv.org/pdf/1301.3781.pdf). This paper introduces CBOW and Skip-ngram architecture
 to learn word representations from large corpus.
 
-### pair-wise scoring
+### Pair-wise scoring
 
 **For the initiated, to keep things simple, I have ignored scaling and
 softmax normalization. Will take it up in the following sections.**
@@ -129,13 +123,14 @@ pairwise_scoring = np.matmul(x,x.T)
 {% endhighlight %}
 
 Each word is a vector.We use the dot product similarity to find the
-pair-wise scoring between the words. An illustration of pair wise calculation.
+pair-wise scoring between the words. An illustration of pair wise calculation[1^].
 
 ![Pairwise Scoring](/assets/scoring.png)
 
 
-The resultant pairwise_scoring is a
-5 x 5 matrix which encodes the similarity between these words.
+The resultant pairwise_scoring is a 5 x 5 matrix which encodes the similarity between these words.
+
+
 
 ### Enrich the input with pairwise scoring
 
@@ -147,12 +142,22 @@ enriched_x = np.matmul(pairwise_scoring,x)
 
 ![Enrich input](/assets/enrich.png)
 
+Enriching is taking the sum of word token vectors, where each vector is
+weighted by pairwise score. An non vectorized implementation should make it clear.
+
+
+{% highlight python %}
+enriched_x_ = np.zeros(shape=x.shape)
+for i, scores in enumerate(pairwise_scoring):
+    weighted_sum = np.zeros(x[0,:].shape)
+    for j,score in enumerate(scores):
+        weighted_sum+= x[j,:] * score
+    enriched_x[i] = weighted_sum
+{% endhighlight %}
 
 This is the underlying idea behind self-attention.
-Since the words are already represented in the vector space, dot product of the
-vector provides the similarity scores between words. If two words have occurred
-together in the corpus used to train the embedding model, the dot product will
-say they are similar. This score is further used to enrich the input.
+Since the words are represented in the vector space, dot product of the
+vectors provides the similarity scores between words. If two words have occurred together enough times in the corpus used to train the embedding model, the dot product will say they are similar. This score is further used to enrich the input.
 
 
 Self attention expanded
@@ -215,12 +220,13 @@ feature space of dimension 20. In wvp its projected into a space of dimension 25
 ### Why do the transformation
 
 Why not use the input matrix x directly as we did in the bare bone attention example ?
+While doing the pair-wise scoring on the input matrix, you notice that the diagonal
+values of the resultant matrix is all 1. This would mean that we are instructing the word
+to attend more to itself.
 
 The matrices wq,wk and wv serve as a parameter to the final neural network and will
 be adjusted based on gradients during back probagation. This will allow the network
-to learn the new feature space.
-
-I always had this question about the importance of word embeddings for downstream
+to learn the new feature space. I always had this question about the importance of word embeddings for downstream
 natural language processing tasks. Had recently put a survey in linked in.
 [Clicke here for the survey](https://www.linkedin.com/posts/gopi-subramanian-39bba651_building-custom-llms-activity-7096593842291818496-sdNe?utm_source=share&utm_medium=member_desktop)
 Say we are building a classifier on a corpus of
@@ -272,3 +278,6 @@ Finally the attention context vector is created as follows.
 context_vector = np.sum(np.matmul(scaled_softmax_score, wvp),axis=0)
 
 {% endhighlight %}
+
+
+[1^] The resultant scoring matrix was filled with random numbers. Apologies to those meticulous readers who actually multiplied these matrices.
