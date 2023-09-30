@@ -8,7 +8,7 @@ Why another self-attention post
 ---------------------
 
 There are a lot of tutorials out there explaining
-attention mechanism with illustrations.
+self attention mechanism with illustrations.
 
 Two of my favorites are
 
@@ -18,7 +18,7 @@ Two of my favorites are
 
 
 After reading the paper [Attention is all you need](https://arxiv.org/pdf/1706.03762.pdf) and the articles
-mentioned above, I was curious about these topics:
+mentioned above, I was curious about:
 
 1. Projecting the embedded space into a feature subspace and subsequent
 learning of these spaces during training.
@@ -35,22 +35,22 @@ Background
 --------
 
 It is easy to understand *attention* as a feature selection problem.
-Not all input features seen by a model are equally important for the task at hand. Prudency dictates we make the model pay more attention to important features than considering all the features presented to it.
+Not all input features seen by a model are equally important for the task at hand. Prudence dictates we make the model pay more attention to important features than considering all the features presented to it.
 
-1. For each feature, compute the importance score. The higher the score, the more important
-the feature.
-2. Use these scores in your downstream task to guide the model.
+1. For each feature, compute importance score. The higher the score, the more critical the feature.
+2. Use these scores in downstream tasks to guide the model.
 
-Some of the existing techniques follow the above steps:
+Some example concepts implementing the above steps:
 
-- Lasso regression, l1 regularization ensures that some of the model coefficients
-are pushed towards zero.
+- Lasso regression, l1 regularization ensures that some of the model coefficients are pushed towards zero.
 
 - Maxpooling layers in CNN selects' the cell with maximum values and ignore the rest of cell values.
 
-From the above example, we may conclude the need for these importance scores is
-to either keep or discard a feature. However, these scores can enrich
-the information the feature carries.
+In each of the previously mentioned instances, a feature was either retained or discarded according to its importance score. Nevertheless, it's worth noting that these scores have the potential to enhance the information conveyed by the feature.
+
+#### Context awareness
+
+"Try to infer the meaning of the word based on its neighbors" - Many amongst us have heard this during our elementary reading classes.
 
 In sequential features, in addition to individual elements, the relationship
 among the elements carries a lot of information. This relationship is commonly
@@ -75,11 +75,10 @@ Self Attention bare bones
 
 We will focus on the scaled self-attention proposed in the paper [Attention is all you need](https://arxiv.org/pdf/1706.03762.pdf).
 
-In the context of self attention the context information captured using the importance score is used to enrich the input.
 
 Its easy to comprehend (for me!) the context information when the inputs are a list of words provided for any downstream natural language processing task. List of words are the basic input units to any natural language processing task.
 
-In this sentence "John plays ukulele occasionally", we expect that for the token "John", the most related word token should be "plays". This what is called as context. So we need to enrich the representation for the token "John" with its relation to the token "plays".
+In this sentence "John plays ukulele occasionally", we expect that for the token "John", the most related word token should be "plays". We enrich the feature representation for the token "John" with its relation to the token "plays".
 
 A standard text preprocessing looks like the below figure.
 
@@ -160,7 +159,7 @@ Since the words are represented in the vector space, dot product of the
 vectors provides the similarity scores between words. If two words have occurred together enough times in the corpus used to train the embedding model, the dot product will say they are similar. This score is further used to enrich the input.
 
 
-Self attention expanded
+Scaled Self attention
 ------------
 <table>
   <tr>
@@ -198,8 +197,7 @@ wvp = np.matmul(wv,x.T).T
 {% endhighlight %}
 
 
-Three weight matrices, wq,wk and wv are created. These matrices are used to project
-our input matrix x to create three new matrices, wqp, wkp and wvp. The input shapes
+Three weight matrices, wq,wk and wv are created. These matrices are used to project input matrix x to create three new matrices, wqp, wkp and wvp. The input shapes
 of all the participating matrices are given below,
 
 {% highlight python %}
@@ -220,13 +218,9 @@ feature space of dimension 20. In wvp its projected into a space of dimension 25
 ### Why do the transformation
 
 Why not use the input matrix x directly as we did in the bare bone attention example ?
-While doing the pair-wise scoring on the input matrix, you notice that the diagonal
-values of the resultant matrix is all 1. This would mean that we are instructing the word
-to attend more to itself.
+- While doing the pair-wise scoring on the input matrix, you notice that the diagonal values of the resultant matrix is all 1. This would mean that we are instructing the word to attend more to itself. After projection this may not be the case. Without projection, the weights of other words are supressed.
 
-The matrices wq,wk and wv serve as a parameter to the final neural network and will
-be adjusted based on gradients during back probagation. This will allow the network
-to learn the new feature space. I always had this question about the importance of word embeddings for downstream
+- The matrices wq,wk and wv serve as a parameter to the final neural network and will be adjusted based on gradients during back probagation. This will allow the network to learn the new feature space. I always had this question about the importance of word embeddings for downstream
 natural language processing tasks. Had recently put a survey in linked in.
 [Clicke here for the survey](https://www.linkedin.com/posts/gopi-subramanian-39bba651_building-custom-llms-activity-7096593842291818496-sdNe?utm_source=share&utm_medium=member_desktop)
 Say we are building a classifier on a corpus of
@@ -258,7 +252,7 @@ The dot product can get very large, hence the scaling. From the paper [Attention
 "To illustrate why the dot products get large, assume that the components of q and k are independent random
 variables with mean 0 and variance 1. Their dot product will have a mean of 0 and variance of dk"
 
-More importantly the we need to keep the dot product controlled because of the subsequent application of softmax.
+More importantly  we need to keep the magnitude of the dot product controlled because of the subsequent application of softmax.
 
 {% highlight python %}
 def softmax(x):
@@ -278,6 +272,8 @@ Finally the attention context vector is created as follows.
 context_vector = np.sum(np.matmul(scaled_softmax_score, wvp),axis=0)
 
 {% endhighlight %}
+
+
 
 
 [1^] The resultant scoring matrix was filled with random numbers. Apologies to those meticulous readers who actually multiplied these matrices.
