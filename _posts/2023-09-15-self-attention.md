@@ -53,7 +53,7 @@ In each of the previously mentioned instances, a feature was either retained or 
 "Try to infer the meaning of the word based on its neighbors" - Many amongst us have heard this during our elementary reading classes.
 
 In sequential features, in addition to individual elements, the relationship
-among the elements carries a lot of information. This relationship is commonly
+among the elements carries a lot of information. This relationship is
 called the context.
 
 - In the sentence "premature optimization is the root cause
@@ -67,8 +67,8 @@ the last year same quarter and similar other time based relationships.
 
 - In video data, pixel from the current frames can be enriched with the information from previous frames.
 
-Self Attention is a way of enriching the features, by adding context
-information.
+Self Attention is a way of enriching the features, making the features *context-aware*.
+
 
 Self Attention bare bones
 -----------------------
@@ -76,9 +76,9 @@ Self Attention bare bones
 We will focus on the scaled self-attention proposed in the paper [Attention is all you need](https://arxiv.org/pdf/1706.03762.pdf).
 
 
-Its easy to comprehend (for me!) the context information when the inputs are a list of words provided for any downstream natural language processing task. List of words are the basic input units to any natural language processing task.
+Its easy to comprehend (for me!) the *context-aware* phenomenon when the inputs are a list of words; basic input units to any natural language processing task.
 
-In this sentence "John plays ukulele occasionally", we expect that for the token "John", the most related word token should be "plays". We enrich the feature representation for the token "John" with its relation to the token "plays".
+In the sentence "John plays ukulele occasionally", we expect that for the token "John", the most related word token should be "plays". We expect to enrich the feature representation for token "John" with its relation to the token "plays".
 
 A standard text preprocessing looks like the below figure.
 
@@ -105,16 +105,27 @@ The input is a matrix of size (5 x 10), where each row represents the embedding 
 In 2003 [Yoshua Bengio](https://scholar.google.com/citations?user=kukA0LcAAAAJ&hl=en) and his team introduced embeddings in the paper, A neural probabilistic language model. Journal of Machine Learning Research, 3:1137-1155, 2003. Since then there are several follow up research and development occurred in the embedding space.
 
 For our purpose to continue with the rest of the article, word embeddings are
-a representation of words in a vector space. Thus we can leverage linear
+a representation of words in a vector space. They map the language into a structured geometric space. Geometric relation between two word vectors will hence reflect the semantic relationship between them. We can leverage linear
 algebra techniques to find similarity between words.
 
 I personally like the 2013 google paper [Efficient estimation of word representations in vector space](https://arxiv.org/pdf/1301.3781.pdf). This paper introduces CBOW and Skip-ngram architecture
-to learn word representations from large corpus.
+to learn word representations from large corpus. An example from this paper,
+arithmetic operations performed on word vectors,
+
+
+### Paris - France + Italy = Rome.
+
+**Subracting the vector for France from Paris and adding the vector for Italy, gives a vector which is very close to Rome.**
+
+
 
 ### Pair-wise scoring
 
+Here we find the similarity between words using dot product.
+
 **For the initiated, to keep things simple, I have ignored scaling and
 softmax normalization. Will take it up in the following sections.**
+
 
 
 {% highlight python %}
@@ -122,28 +133,22 @@ pairwise_scoring = np.matmul(x,x.T)
 {% endhighlight %}
 
 Each word is a vector.We use the dot product similarity to find the
-pair-wise scoring between the words. An illustration of pair wise calculation[1^].
+pair-wise scoring between the words. An illustration of pair wise calculation[^1].
 
 ![Pairwise Scoring](/assets/scoring.png)
 
+These pairwise scores are called *attention scores*. Word close to each another
+in the geometric space, will have a higher attention score.
 
-The resultant pairwise_scoring is a 5 x 5 matrix which encodes the similarity between these words.
+The resultant pairwise_scoring is a 5 x 5 matrix which encodes the attention scores between these words.
 
 
 
-### Enrich the input with pairwise scoring
+### Enrich the input with attention score
 
-We enrich the input matrix x with this pairwise scoring
+In the above diagram, the row gives attention scores for word *eat* with the other words in the input. Enriching is performing of a weighted sum of the individual word embedding vectors with the attention scores.
 
-{% highlight python %}
-enriched_x = np.matmul(pairwise_scoring,x)
-{% endhighlight %}
-
-![Enrich input](/assets/enrich.png)
-
-Enriching is taking the sum of word token vectors, where each vector is
-weighted by pairwise score. An non vectorized implementation should make it clear.
-
+The attention score for the word 'eat' and 'eat' is multiplied with 'eat' vector. The score for word 'the' and 'eat' is multiplied with 'the' vector and son on. Finally we add all these vectors to get the final enriched vector for the word 'eat'. Words which are semantically close to "eat" will contribute more and others will contribute less.
 
 {% highlight python %}
 enriched_x_ = np.zeros(shape=x.shape)
@@ -154,9 +159,20 @@ for i, scores in enumerate(pairwise_scoring):
     enriched_x[i] = weighted_sum
 {% endhighlight %}
 
+We can vectorize the above operation.
+
+{% highlight python %}
+enriched_x = np.matmul(pairwise_scoring,x)
+{% endhighlight %}
+
+![Enrich input](/assets/enrich.png)
+
+
+### Voila
+
 This is the underlying idea behind self-attention.
 Since the words are represented in the vector space, dot product of the
-vectors provides the similarity scores between words. If two words have occurred together enough times in the corpus used to train the embedding model, the dot product will say they are similar. This score is further used to enrich the input.
+vectors provides the similarity scores between words. Semantically similar words will have high attention scores and finally will contribute more to word in question through weighted sum.
 
 
 Scaled Self attention
@@ -170,14 +186,58 @@ Scaled Self attention
    </tr>
 </table>
 
-In the table above, the first column has  the picture from Attention is all you need paper. The second column depicts our barebone attention explained
+In the table above, the first column has  the picture from Attention is all you need paper. The second column depicts our bare bone attention explained
 in the previous section.
 
-1. Our barebone had a single input X, our word embeddings matrix. The scaled dot attention has three inputs, Q,K,V.
+1. Bare bone had a single input X, our word embeddings matrix. The scaled dot attention has three inputs, Q,K,V.
 
 2. What are the additional boxes, scale, mask and softmax in scaled dot-product attention.
 
-Let us address the first question. All blogs and papers refer to input as Q,K and V. This comes from the search engine / recommendation terminology.
+#### Query, Key, Value Model
+
+Let us address the first question. All blogs and papers refer to input as Q,K and V. This comes from the search engine / recommendation terminology. Going back in history to early days of search engine, inverted indices was the data structure which powered searches on large databases.
+
+Documents were indexed based on words. An entry in an inverted index can be imagined as Key,Value pair as shown,
+
+{% beginhighlight python %}
+{keyword1,keyword21,keyword45}:{Document1,Document100,Document121}
+{% endhighlight%}}
+
+This kind of indexing accelerates keyword based searches.
+
+Let us say the whole vocabulary is a set, V = {keyword1,....keywordm}; m keywords; and the document corpus is D ={Document1,...Documentn} ; n documents
+
+Given a query, Q = {keyword1,keyword20,keyword21}. We can retrieve all the all documents containing the key word query as follows
+
+results = sum( intersection(Q, K) * V) for all n Documents
+
+
+{% beginhighlight python %}
+vocabulary = ['a','b','c','d']
+documents  = ['d1','d2', 'd3','d4','d5']
+
+inverted_index = {('a','b'): ['d1','d2']
+                 ,('a','c'): ['d1','d2','d3']
+                 ,('b'): ['d1','d2']
+                 ,('c','d'): ['d4','d5']
+                 }
+
+query = ('a','c')
+
+
+results = set()
+for key,value in inverted_index.items():
+    match = set(query).intersection(set(key))
+    if  len(match) >= 1:
+        for document in value:
+            results.add(document)
+{% endhighlight %}
+
+
+The function intersection(Q, K) can be replaced by a scoring function instead of the discrete intersection. Imaging our *pairwise_scoring* replacing this function.
+
+While explaining the bare bones attention, our input played the role of Query, Key and Value. There is no rule that Query, Key and Value should be three different inputs. Since this way of representation helps us describe multiple problems, like search, sequence to sequence learning, language models and others Query, Key, Value representation is used while describing attention.
+
 
 In the case of self attention, Q, K and V are transformations of the input matrix. In the following code, wqp, wkp and wvp are equivalent to Q, K and V matrices depicted in the diagram.
 
@@ -276,4 +336,4 @@ context_vector = np.sum(np.matmul(scaled_softmax_score, wvp),axis=0)
 
 
 
-[1^] The resultant scoring matrix was filled with random numbers. Apologies to those meticulous readers who actually multiplied these matrices.
+[^1]: The resultant scoring matrix was filled with random numbers. Apologies to those meticulous readers who actually multiplied these matrices.
