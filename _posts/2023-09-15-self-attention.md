@@ -199,7 +199,7 @@ Let us address the first question. All blogs and papers refer to input as Q,K an
 
 Documents were indexed based on words. An entry in an inverted index can be imagined as Key,Value pair as shown,
 
-{% beginhighlight python %}
+{% highlight python %}
 {keyword1,keyword21,keyword45}:{Document1,Document100,Document121}
 {% endhighlight%}}
 
@@ -212,7 +212,7 @@ Given a query, Q = {keyword1,keyword20,keyword21}. We can retrieve all the all d
 results = sum( intersection(Q, K) * V) for all n Documents
 
 
-{% beginhighlight python %}
+{% highlight python %}
 vocabulary = ['a','b','c','d']
 documents  = ['d1','d2', 'd3','d4','d5']
 
