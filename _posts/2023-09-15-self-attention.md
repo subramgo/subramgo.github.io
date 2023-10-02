@@ -209,7 +209,7 @@ Documents were indexed based on words. An entry in an inverted index can be imag
 
 {% highlight python %}
 {keyword1,keyword21,keyword45}:{Document1,Document100,Document121}
-{% endhighlight% }
+{% endhighlight %}
 
 This kind of indexing accelerates keyword based searches.
 
