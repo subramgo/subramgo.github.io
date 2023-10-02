@@ -209,7 +209,7 @@ Documents were indexed based on words. An entry in an inverted index can be imag
 
 {% highlight python %}
 {keyword1,keyword21,keyword45}:{Document1,Document100,Document121}
-{% endhighlight%}}
+{% endhighlight% }
 
 This kind of indexing accelerates keyword based searches.
 
@@ -374,6 +374,12 @@ Look at the extract from paper [Self-Attention does not need O(n^2) memory](http
 
 ![memory complexity](/assets/memory.png)
 
+The above paper proposes a constant memory and logarithmic memory. The division of exponential summation is moved
+following the distributive law as shown in the figure below from the paper.
+
+![memory calculate](/assets/memorycalc.png)
+
+The quadratic time complexity is a good motivation for further research. [Reformer: The effiecient transfomer](https://arxiv.org/abs/2001.04451) replaces dot product attention with locality-sensitive hashing, changing the complexity from quadratic to log.
 
 
 Multi-head Attention
@@ -395,8 +401,6 @@ vectors from these heads are concatenated together and projected one final time.
 
 
 
-
-
 Finally
 -----------
 
@@ -415,7 +419,8 @@ We discussed about the need for projection and how the Query,Key and Value model
 
 By scaling, we control the magnitude of the attention scores and avoid subsequent arithmetic problems which can creep when softmax is applied.
 
-Finally we did not cover the Space and time complexity of attention.
+Finally to cover the Space and time complexity of attention, we glanced over the recent works by Google to tackle
+the space complexity and a new architecture called as Reformer to tackle the time complexity.
 
 
 [^1]: The resultant scoring matrix was filled with random numbers. Apologies to those meticulous readers who actually multiplied these matrices.
